@@ -15,7 +15,7 @@ import java.time.zone.ZoneRules;
 import java.util.Map;
 import java.util.UUID;
 
-import de.dennisguse.opentracks.Startup;
+
 import de.dennisguse.opentracks.data.models.ActivityType;
 import de.dennisguse.opentracks.data.models.Track;
 import de.dennisguse.opentracks.data.tables.MarkerColumns;
@@ -34,7 +34,7 @@ class CustomSQLiteOpenHelper extends SQLiteOpenHelper {
     private final Context context;
 
     public CustomSQLiteOpenHelper(Context context) {
-        this(context, ((Startup) context.getApplicationContext()).getDatabaseName());
+        this(context, "database.db");
     }
 
     @VisibleForTesting
@@ -403,7 +403,7 @@ class CustomSQLiteOpenHelper extends SQLiteOpenHelper {
 
         // TrackPoints; identical to upgradeFrom27to28()
         db.execSQL("ALTER TABLE trackpoints RENAME TO trackpoints_old");
-        db.execSQL("CREATE TABLE trackpoints (_id INTEGER PRIMARY KEY AUTOINCREMENT, trackid INTEGER NOT NULL, longitude INTEGER, latitude INTEGER, time INTEGER, elevation FLOAT, accuracy FLOAT, speed FLOAT, bearing FLOAT, sensor_heartrate FLOAT, sensor_cadence FLOAT, sensor_power FLOAT, elevation_gain FLOAT, elevation_loss FLOAT, type TEXT CHECK(type IN (-2, -1, 0, 1)), FOREIGN KEY (trackid) REFERENCES tracks(_id) ON UPDATE CASCADE ON DELETE CASCADE)");
+        db.execSQL("CREATE TABLE trackpoints (_id INTEGER PRIMARY KEY AUTOINCREMENT, trackid INTEGER NOT NULL, longitude INTEGER, latitude INTEGER, time INTEGER, elevation FLOAT, accuracy FLOAT, speed FLOAT, bearing FLOAT, sensor_heartrate FLOAT, sensor_cadence FLOAT, sensor_power FLOAT, elevation_gain FLOAT, elevation_loss FLOAT, type TEXT CHECK(type IN (-2, -1, 0, 1)), sensor_distance FLOAT, FOREIGN KEY (trackid) REFERENCES tracks(_id) ON UPDATE CASCADE ON DELETE CASCADE)");
         db.execSQL("INSERT INTO trackpoints SELECT _id, trackid, longitude, latitude, time, elevation, accuracy, speed, bearing, sensor_heartrate, sensor_cadence, sensor_power, elevation_gain, elevation_gain, type FROM trackpoints_old");
         db.execSQL("DROP TABLE trackpoints_old");
 

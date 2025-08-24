@@ -1,31 +1,8 @@
-apply plugin: 'com.android.application'
-
-buildscript {
-    repositories {
-        google()
-        mavenCentral()
-    }
-    dependencies {
-        classpath 'com.android.tools.build:gradle:8.11.1'
-    }
-}
-
-allprojects {
-    repositories {
-        google()
-        mavenCentral()
-    }
-}
-
-def getVersionName = { ->
-    return 'git describe --tags'.execute().text.trim()
-}
-
-def getVersionCode = { ->
-    return Integer.valueOf('git rev-list HEAD --count'.execute().text.trim())
-}
+apply plugin: 'com.android.library'
 
 android {
+    namespace = 'de.dennisguse.opentracks'
+
     compileOptions {
         coreLibraryDesugaringEnabled = true
 
@@ -40,103 +17,29 @@ android {
         buildConfig = true
     }
 
-    androidResources {
-        generateLocaleConfig = true
-    }
-
     defaultConfig {
-        applicationId 'de.dennisguse.opentracks'
-        versionCode 6237
-        versionName "v4.21.1"
-
-        buildConfigField "String", "VERSION_NAME_FULL", "\"${getVersionName()}\""
+        versionCode 6284
+        versionName "v4.22.0"
 
         minSdk = 26
         targetSdk = 36
 
         testInstrumentationRunner 'de.dennisguse.opentracks.TestRunner'
         testInstrumentationRunnerArguments clearPackageData: 'true'
-    }
-    signingConfigs {
-        nightly {
-            if (System.getProperty('nightly_store_file') != null) {
-                storeFile file(System.getProperty('nightly_store_file'))
-                storePassword System.getProperty('nightly_store_password')
-                keyAlias System.getProperty('nightly_key_alias')
-                keyPassword System.getProperty('nightly_key_password')
-            }
-        }
-        release {
-            if (System.getProperty("release_store_file") != null) {
-                storeFile file(System.getProperty("release_store_file"))
-                storePassword System.getProperty("release_store_password")
-                keyAlias System.getProperty("release_key_alias")
-                keyPassword System.getProperty("release_key_password")
-            }
-        }
-    }
 
-    namespace = 'de.dennisguse.opentracks'
+        buildConfigField "String", "APPLICATION_ID", "\"com.duo.sports.onlyrun\""
+        buildConfigField "String", "VERSION_NAME_FULL", "\"v4.22.0\""
+        buildConfigField "int", "VERSION_CODE", "6284"
+        buildConfigField "String", "VERSION_NAME", "\"v4.22.0\""
+        resValue "string", "applicationId", "com.duo.sports.onlyrun"
+    }
 
     buildTypes {
-        debug {
-            applicationIdSuffix '.debug'
-            versionNameSuffix '-debug'
-        }
         release {
             crunchPngs = false
             minifyEnabled = false
         }
     }
-
-
-    flavorDimensions 'version'
-    productFlavors {
-        nightly {
-            dimension 'version'
-            applicationId 'de.dennisguse.opentracks.nightly'
-            signingConfig = signingConfigs.nightly
-        }
-        irreproducible {
-            // Non-reproducible: https://f-droid.org/de/packages/de.dennisguse.opentracks/
-            dimension 'version'
-            applicationId 'de.dennisguse.opentracks'
-            versionNameSuffix 'irreproducible'
-        }
-        reproducible {
-            // Developer Binaries: https://github.com/OpenTracksApp/OSMDashboard/releases/download/v%v/de.dennisguse.opentracks.playstore_%v.apk
-            // FDroid: https://f-droid.org/de/packages/de.dennisguse.opentracks.playstore
-            // PlayStore: https://play.google.com/store/apps/details?id=de.dennisguse.opentracks.playstore
-            dimension 'version'
-            applicationId 'de.dennisguse.opentracks.playstore'
-            signingConfig = signingConfigs.release
-        }
-    }
-
-    applicationVariants.configureEach { variant ->
-        variant.resValue 'string', 'applicationId', variant.applicationId
-
-        variant.outputs.configureEach {
-            if (variant.flavorName == 'nightly') {
-                setVersionCodeOverride(getVersionCode())
-                setVersionNameOverride(getVersionName())
-            }
-
-            if (variant.flavorName == 'reproducible') {
-                outputFileName = "${applicationId}_${variant.versionName}.apk"
-            } else {
-                outputFileName = "${applicationId}_${variant.versionCode}.apk"
-            }
-        }
-    }
-
-    dependenciesInfo {
-        // Disables dependency metadata when building APKs.
-        includeInApk = false
-        // Disables dependency metadata when building Android App Bundles.
-        includeInBundle = false
-    }
-
 }
 
 dependencies {

@@ -43,8 +43,8 @@ limitations under the License.
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_LOCATION"
         android:minSdkVersion="34" />
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_CONNECTED_DEVICE"
-        android:minSdkVersion="34" />
+<!--    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_CONNECTED_DEVICE"-->
+<!--        android:minSdkVersion="34" />-->
 
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
@@ -373,13 +373,13 @@ limitations under the License.
 
         <provider
             android:name=".data.ShareContentProvider"
-            android:authorities="${applicationId}.content"
+            android:authorities="com.duo.sports.onlyrun.content"
             android:exported="false"
             android:grantUriPermissions="true" />
 
         <provider
             android:name="androidx.core.content.FileProvider"
-            android:authorities="${applicationId}.fileprovider"
+            android:authorities="com.duo.sports.onlyrun.fileprovider"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data

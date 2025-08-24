@@ -14,7 +14,6 @@ import androidx.core.app.NotificationCompat;
 import androidx.core.app.TaskStackBuilder;
 
 import de.dennisguse.opentracks.R;
-import de.dennisguse.opentracks.TrackListActivity;
 import de.dennisguse.opentracks.data.models.Distance;
 import de.dennisguse.opentracks.data.models.DistanceFormatter;
 import de.dennisguse.opentracks.data.models.SpeedFormatter;
@@ -22,7 +21,6 @@ import de.dennisguse.opentracks.data.models.TrackPoint;
 import de.dennisguse.opentracks.settings.PreferencesUtils;
 import de.dennisguse.opentracks.settings.UnitSystem;
 import de.dennisguse.opentracks.stats.TrackStatistics;
-import de.dennisguse.opentracks.util.IntentUtils;
 
 /**
  * Manages the content of the notification shown by {@link TrackRecordingService}.
@@ -103,14 +101,19 @@ class TrackRecordingServiceNotificationManager implements SharedPreferences.OnSh
     }
 
     Notification setGPSonlyStarted(Context context) {
-        Intent intent = IntentUtils.newIntent(context, TrackListActivity.class);
+        Intent intent = context.getPackageManager().getLaunchIntentForPackage(context.getPackageName());
 
-        int pendingIntentFlags = 0;
-        pendingIntentFlags = PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT;
-        PendingIntent pendingIntent = TaskStackBuilder.create(context)
-                .addParentStack(TrackListActivity.class)
-                .addNextIntent(intent)
-                .getPendingIntent(0, pendingIntentFlags);
+        PendingIntent pendingIntent = null;
+        if (intent != null) {
+            int pendingIntentFlags = PendingIntent.FLAG_UPDATE_CURRENT;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                pendingIntentFlags |= PendingIntent.FLAG_IMMUTABLE;
+            }
+
+            pendingIntent = TaskStackBuilder.create(context)
+                    .addNextIntentWithParentStack(intent)
+                    .getPendingIntent(0, pendingIntentFlags);
+        }
 
         updateContent(context.getString(R.string.gps_starting));
 
