@@ -16,10 +16,13 @@
 
 package de.dennisguse.opentracks.services;
 
+import android.Manifest;
 import android.app.Service;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.content.pm.ServiceInfo;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.PowerManager.WakeLock;
@@ -29,6 +32,7 @@ import android.util.Pair;
 import androidx.annotation.Nullable;
 import androidx.annotation.VisibleForTesting;
 import androidx.core.app.ServiceCompat;
+import androidx.core.content.ContextCompat;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
@@ -216,7 +220,26 @@ public class TrackRecordingService extends Service implements TrackPointCreator.
         wakeLock = SystemUtils.acquireWakeLock(this, wakeLock);
         trackPointCreator.start(this, handler);
 
-        ServiceCompat.startForeground(this, TrackRecordingServiceNotificationManager.NOTIFICATION_ID, notificationManager.setGPSonlyStarted(this), ServiceInfo.FOREGROUND_SERVICE_TYPE_LOCATION + ServiceInfo.FOREGROUND_SERVICE_TYPE_CONNECTED_DEVICE);
+        // 1. 准备要启动的类型掩码
+        int foregroundServiceType = ServiceInfo.FOREGROUND_SERVICE_TYPE_LOCATION; // 默认至少有定位
+
+// 2. 只有在真正拿到蓝牙权限时，才加上 connectedDevice 类型
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_CONNECT) == PackageManager.PERMISSION_GRANTED) {
+                foregroundServiceType |= ServiceInfo.FOREGROUND_SERVICE_TYPE_CONNECTED_DEVICE;
+            }
+        } else {
+            // API 31 以下不需要 BLUETOOTH_CONNECT 权限
+            foregroundServiceType |= ServiceInfo.FOREGROUND_SERVICE_TYPE_CONNECTED_DEVICE;
+        }
+
+// 3. 使用动态确定的类型启动
+        ServiceCompat.startForeground(
+                this,
+                TrackRecordingServiceNotificationManager.NOTIFICATION_ID,
+                notificationManager.setGPSonlyStarted(this),
+                foregroundServiceType
+        );
     }
 
     public void endCurrentTrack() {
