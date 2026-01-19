@@ -373,13 +373,13 @@ limitations under the License.
 
         <provider
             android:name=".data.ShareContentProvider"
-            android:authorities="com.duo.sports.onlyrun.content"
+            android:authorities="${applicationId}.content"
             android:exported="false"
             android:grantUriPermissions="true" />
 
         <provider
             android:name="androidx.core.content.FileProvider"
-            android:authorities="com.duo.sports.onlyrun.fileprovider"
+            android:authorities="${applicationId}.fileprovider"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data
