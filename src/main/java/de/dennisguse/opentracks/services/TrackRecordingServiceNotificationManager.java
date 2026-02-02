@@ -116,8 +116,8 @@ class TrackRecordingServiceNotificationManager implements SharedPreferences.OnSh
         }
 
         updateContent(context.getString(R.string.gps_starting));
-
-        notificationBuilder.setContentIntent(pendingIntent);
+        // 暂时禁用点击效果
+//        notificationBuilder.setContentIntent(pendingIntent);
         updateNotification();
 
         return getNotification();
