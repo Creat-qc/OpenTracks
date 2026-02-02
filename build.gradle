@@ -27,11 +27,11 @@ android {
         testInstrumentationRunner 'de.dennisguse.opentracks.TestRunner'
         testInstrumentationRunnerArguments clearPackageData: 'true'
 
-        buildConfigField "String", "APPLICATION_ID", "\"com.duo.sports.onlyrun.debug\""
+        buildConfigField "String", "APPLICATION_ID", "\"com.duo.sports.onlyrun\""
         buildConfigField "String", "VERSION_NAME_FULL", "\"v4.22.0\""
         buildConfigField "int", "VERSION_CODE", "6284"
         buildConfigField "String", "VERSION_NAME", "\"v4.22.0\""
-        resValue "string", "applicationId", "com.duo.sports.onlyrun.debug"
+        resValue "string", "applicationId", "com.duo.sports.onlyrun"
     }
 
     buildTypes {
