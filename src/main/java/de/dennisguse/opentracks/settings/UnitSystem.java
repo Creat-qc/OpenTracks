@@ -4,11 +4,16 @@ import de.dennisguse.opentracks.R;
 
 public enum UnitSystem {
     METRIC(R.string.stats_units_metric),
-
+    /*
     IMPERIAL_FEET(R.string.stats_units_imperial_feet),
     IMPERIAL_METER(R.string.stats_units_imperial_meter),
+    NAUTICAL_IMPERIAL(R.string.stats_units_nautical);
+     */
 
-    NAUTICAL_IMPERIAL(R.string.stats_units_nautical); // Nautical miles with feet
+    IMPERIAL_FEET(R.string.stats_units_metric),
+    IMPERIAL_METER(R.string.stats_units_metric),
+
+    NAUTICAL_IMPERIAL(R.string.stats_units_metric); // Nautical miles with feet
 
     private final int preferenceIdentifier;
 
